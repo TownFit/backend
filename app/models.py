@@ -10,7 +10,7 @@ class Users(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     oauth_provider = Column(String)
-    oauth_id = Column(String, unique=True)
+    oauth_id = Column(String, unique=True, index=True)
 
     recommendations = relationship("Recommendations", back_populates="user")
 
@@ -29,7 +29,7 @@ class Facilities(Base):
     __tablename__ = "facilities"
 
     id = Column(Integer, primary_key=True, index=True)
-    type_id = Column(Integer, ForeignKey("facility_types.id"))
+    type_id = Column(Integer, ForeignKey("facility_types.id"), index=True)
     name = Column(String)
     description = Column(String, nullable=True)
     latitude = Column(Double)
@@ -43,8 +43,8 @@ class Recommendations(Base):
     __tablename__ = "recommendations"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    facility_id = Column(Integer, ForeignKey("facilities.id"))
+    user_id = Column(Integer, ForeignKey("users.id"), index=True)
+    facility_id = Column(Integer, ForeignKey("facilities.id"), index=True)
     created_at = Column(DateTime)
     description = Column(String, nullable=True)
 
