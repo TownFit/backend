@@ -46,4 +46,4 @@ jobs:
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/townfit-backend:latest
             sudo docker stop townfit-backend || true
             sudo docker rm townfit-backend || true
-            sudo docker run -d --name townfit-backend -p 8000:8000 --restart always --env-file .env ${{ secrets.DOCKERHUB_USERNAME }}/townfit-backend:latest
+            sudo docker run -d --name townfit-backend -p 8000:8000 --restart always --env-file /home/ubuntu/backend/.env ${{ secrets.DOCKERHUB_USERNAME }}/townfit-backend:latest
