@@ -21,7 +21,7 @@ class User(UserBase):
 
     class Config:
         from_attributes = True
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "id": 1,
                 "name": "홍길동",
@@ -48,7 +48,7 @@ class FacilityType(FacilityTypeBase):
 
     class Config:
         from_attributes = True
-        schema_extra = {
+        json_schema_extra = {
             "example": {"id": 1, "name": "헬스", "description": "헬스 관련 시설"}
         }
 
@@ -74,7 +74,7 @@ class Facility(FacilityBase):
 
     class Config:
         from_attributes = True
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "id": 2,
                 "type_id": 1,
@@ -112,7 +112,7 @@ class Recommendation(RecommendationBase):
 
     class Config:
         from_attributes = True
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "id": 1,
                 "user_id": 1,
