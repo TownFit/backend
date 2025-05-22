@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Double, DateTime
 from sqlalchemy.orm import relationship
 
-from app.core.db import Base
+from app.core.db import Base, engine
 
 
 class Users(Base):
@@ -50,3 +50,6 @@ class Recommendations(Base):
 
     user = relationship("Users", back_populates="recommendations")
     facility = relationship("Facilities", back_populates="recommendations")
+
+
+Base.metadata.create_all(bind=engine)

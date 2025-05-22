@@ -5,12 +5,8 @@ import requests
 from app.utils.google_profile import GoogleProfile
 
 
+# 구글 콜백 코드로부터 access token과 id token을 가져오는 함수
 def getGoogleToken(code: str) -> str:
-    """
-    구글 콜백 코드로부터 access token과 id token을 가져오는 함수
-    :param code: 구글에서 받은 인증 코드
-    :return: AccessToken
-    """
     endpoint = "https://oauth2.googleapis.com/token"
     payload = {
         "client_id": settings.GOOGLE_CLIENT_ID,
@@ -28,6 +24,7 @@ def getGoogleToken(code: str) -> str:
     return response.get("access_token")
 
 
+# 구글 access token으로부터 유저 정보를 가져오는 함수
 def getGoogleUserName(accessToken: str) -> GoogleProfile:
     endpoint = "https://www.googleapis.com/oauth2/v3/userinfo"
     headers = {"Authorization": f"Bearer {accessToken}"}

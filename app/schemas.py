@@ -20,7 +20,7 @@ class User(UserBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # ---------------------
@@ -39,7 +39,7 @@ class FacilityType(FacilityTypeBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # ---------------------
@@ -62,7 +62,7 @@ class Facility(FacilityBase):
     facility_type: FacilityType
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # ---------------------
@@ -85,7 +85,7 @@ class Recommendation(RecommendationBase):
     facility: Facility
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # 관계 필드를 포함한 응답용 스키마
