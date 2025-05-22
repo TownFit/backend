@@ -11,6 +11,8 @@ class Settings:
         self.GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
         self.GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
         self.GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
+        self.GOOGLE_ORIGIN_URI = os.getenv("GOOGLE_ORIGIN_URI")
+        self.SESSION_SECRET_KEY = os.getenv("SESSION_SECRET_KEY")
 
 
 settings = Settings()

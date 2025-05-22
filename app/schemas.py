@@ -21,6 +21,14 @@ class User(UserBase):
 
     class Config:
         from_attributes = True
+        schema_extra = {
+            "example": {
+                "id": 1,
+                "name": "홍길동",
+                "oauth_provider": "google",
+                "oauth_id": "1234567890",
+            }
+        }
 
 
 # ---------------------
@@ -40,6 +48,9 @@ class FacilityType(FacilityTypeBase):
 
     class Config:
         from_attributes = True
+        schema_extra = {
+            "example": {"id": 1, "name": "헬스", "description": "헬스 관련 시설"}
+        }
 
 
 # ---------------------
@@ -63,6 +74,21 @@ class Facility(FacilityBase):
 
     class Config:
         from_attributes = True
+        schema_extra = {
+            "example": {
+                "id": 2,
+                "type_id": 1,
+                "name": "헬스장",
+                "description": "24시간 운영",
+                "latitude": 37.1234,
+                "longitude": 127.5678,
+                "facility_type": {
+                    "id": 1,
+                    "name": "헬스",
+                    "description": "헬스 관련 시설",
+                },
+            }
+        }
 
 
 # ---------------------
@@ -86,21 +112,31 @@ class Recommendation(RecommendationBase):
 
     class Config:
         from_attributes = True
-
-
-# 관계 필드를 포함한 응답용 스키마
-class UserWithRecommendations(User):
-    recommendations: List[Recommendation] = []
-
-
-class FacilityTypeWithFacilities(FacilityType):
-    facilities: List[Facility] = []
-
-
-class FacilityWithRecommendations(Facility):
-    recommendations: List[Recommendation] = []
-
-
-class RecommendationDetail(Recommendation):
-    user: User
-    facility: Facility
+        schema_extra = {
+            "example": {
+                "id": 1,
+                "user_id": 1,
+                "facility_id": 2,
+                "created_at": "2024-05-22T12:00:00",
+                "description": "추천 설명",
+                "user": {
+                    "id": 1,
+                    "name": "홍길동",
+                    "oauth_provider": "google",
+                    "oauth_id": "1234567890",
+                },
+                "facility": {
+                    "id": 2,
+                    "type_id": 1,
+                    "name": "헬스장",
+                    "description": "24시간 운영",
+                    "latitude": 37.1234,
+                    "longitude": 127.5678,
+                    "facility_type": {
+                        "id": 1,
+                        "name": "헬스",
+                        "description": "헬스 관련 시설",
+                    },
+                },
+            }
+        }
