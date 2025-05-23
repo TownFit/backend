@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from app.core.db import get_db
-from app.schemas import FacilityType, User, Recommendation
+from app.schemas import FacilityType, GeneralPostResponse, User, Recommendation
 from app import crud
 
 
@@ -26,6 +26,33 @@ def get_me(request: Request, dbSession: Annotated[Session, Depends(get_db)]) -> 
         raise HTTPException(status_code=404, detail="User not found")
 
     return user
+
+
+@router.delete("/user/me", response_model=GeneralPostResponse)
+def delete_me(
+    request: Request, dbSession: Annotated[Session, Depends(get_db)]
+) -> GeneralPostResponse:
+    """
+    회원 탈퇴
+
+    - 세션을 통해 로그인한 유저의 정보를 가져옴
+    - 탈퇴시 유저 정보와 추천 시설타입 목록을 모두 삭제, 세션도 삭제
+    """
+    if "user" not in request.session:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    # 세션에서 유저 정보 가져오기
+    user = crud.get_user(dbSession, request.session["user"])
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # 유저 정보 삭제
+    crud.delete_recommendations(dbSession, user.id)
+    crud.delete_user(dbSession, user.id)
+
+    # 세션 삭제
+    del request.session["user"]
+    return GeneralPostResponse(message="success")
 
 
 @router.get("/user/get-recommendations", response_model=list[FacilityType])
