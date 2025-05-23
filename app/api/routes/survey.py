@@ -47,10 +47,6 @@ def submit_survey(
     - 세션을 통해 로그인한 유저의 정보를 가져옴
     - 기존 설문조사 내역이 있으면, 삭제 후 새로운 추천 생성
     """
-    # body가 비어있으면 에러
-    if not body:
-        raise HTTPException(status_code=400, detail="Empty body")
-
     # Gemini에 쿼리 날리기
     facilityTypes = crud.get_facility_types(dbSession)
     query = gemini.make_query(body, facilityTypes, number=3)
