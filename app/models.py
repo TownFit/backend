@@ -23,6 +23,7 @@ class FacilityTypes(Base):
     description = Column(String, nullable=True)
 
     facilities = relationship("Facilities", back_populates="facility_type")
+    recommendations = relationship("Recommendations", back_populates="facility_type")
 
 
 class Facilities(Base):
@@ -36,7 +37,6 @@ class Facilities(Base):
     longitude = Column(Double)
 
     facility_type = relationship("FacilityTypes", back_populates="facilities")
-    recommendations = relationship("Recommendations", back_populates="facility")
 
 
 class Recommendations(Base):
@@ -44,12 +44,12 @@ class Recommendations(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), index=True)
-    facility_id = Column(Integer, ForeignKey("facilities.id"), index=True)
+    facility_type_id = Column(Integer, ForeignKey("facility_types.id"), index=True)
     created_at = Column(DateTime)
     description = Column(String, nullable=True)
 
     user = relationship("Users", back_populates="recommendations")
-    facility = relationship("Facilities", back_populates="recommendations")
+    facility_type = relationship("FacilityTypes", back_populates="recommendations")
 
 
 Base.metadata.create_all(bind=engine)

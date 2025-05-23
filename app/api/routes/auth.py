@@ -21,7 +21,7 @@ router = APIRouter(tags=["auth"])
 )
 def google_callback(
     request: Request, code: str, dbSession: Annotated[Session, Depends(get_db)]
-):
+) -> RedirectResponse:
     """
     Google 로그인 Callback
 
