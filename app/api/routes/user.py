@@ -11,6 +11,20 @@ from app.user import get_current_user
 router = APIRouter(tags=["user"])
 
 
+@router.post("/user/logout", response_model=GeneralPostResponse)
+def logout(
+    request: Request,
+    user: Annotated[User, Depends(get_current_user)],  # 검증용
+) -> GeneralPostResponse:
+    """
+    로그아웃
+
+    - 세션에서 유저 정보를 삭제
+    """
+    del request.session["user"]
+    return GeneralPostResponse(message="success")
+
+
 @router.get("/user/me", response_model=User)
 def get_me(
     user: Annotated[User, Depends(get_current_user)],
