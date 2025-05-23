@@ -1,4 +1,3 @@
-import logging
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
@@ -18,9 +17,5 @@ app.add_middleware(
 
 # 세션 미들웨어 설정
 app.add_middleware(SessionMiddleware, secret_key=settings.SESSION_SECRET_KEY)
-
-# 로깅 설정
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 app.include_router(api_router)
