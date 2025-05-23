@@ -24,6 +24,11 @@ def get_user_by_oauth_id(db: Session, oauth_id: str):
     return db.query(models.Users).filter(models.Users.oauth_id == oauth_id).first()
 
 
+def delete_user(db: Session, user_id: int):
+    db.query(models.Users).filter(models.Users.id == user_id).delete()
+    db.commit()
+
+
 # Recommendation
 def has_recommendation(db: Session, user_id: int):
     return (
