@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from app.core.db import get_db
-from app.schemas import User, Recommendation
+from app.schemas import FacilityType, User, Recommendation
 from app import crud
 
 
@@ -11,7 +11,7 @@ router = APIRouter(tags=["user"])
 
 
 @router.get("/user/me", response_model=User)
-def get_me(request: Request, dbSession: Annotated[Session, Depends(get_db)]):
+def get_me(request: Request, dbSession: Annotated[Session, Depends(get_db)]) -> User:
     """
     현재 로그인한 유저의 정보 조회
 
@@ -28,12 +28,12 @@ def get_me(request: Request, dbSession: Annotated[Session, Depends(get_db)]):
     return user
 
 
-@router.get("/user/get-recommendations", response_model=list[Recommendation])
+@router.get("/user/get-recommendations", response_model=list[FacilityType])
 def get_recommendations(
     request: Request, dbSession: Annotated[Session, Depends(get_db)]
-):
+) -> list[FacilityType]:
     """
-    현재 로그인한 유저의 과거 설문조사에 따른 추천 목록 조회
+    현재 로그인한 유저의 추천 시설타입 목록 조회
 
     - 세션을 통해 로그인한 유저의 정보를 가져옴
     """
@@ -45,6 +45,7 @@ def get_recommendations(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # 과거 설문조사에 따른 추천 목록 조회
+    # 과거 설문조사에 따른 추천 시설타입 목록 조회
     recommendations = crud.get_recommendations(dbSession, user.id)
-    return recommendations
+    result = list(map(lambda x: x.facility_type, recommendations))
+    return result
