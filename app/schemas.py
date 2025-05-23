@@ -1,6 +1,6 @@
 from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 # ---------------------
@@ -97,7 +97,7 @@ class Facility(FacilityBase):
 class RecommendationBase(BaseModel):
     user_id: int
     facility_type_id: int
-    created_at: datetime = datetime.now()
+    created_at: datetime = Field(default_factory=datetime.now)
     description: Optional[str] = None
 
 
