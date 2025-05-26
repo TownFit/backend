@@ -1,5 +1,6 @@
-from app.models.coordinate import Coordinate
 from __future__ import annotations
+from app.model.coordinate import Coordinate
+from app import schemas
 
 
 class Area:
@@ -25,3 +26,12 @@ class Area:
             for c in coordinates
         )
         return cls(centroid, radius)
+
+    def to_schema(self) -> schemas.Area:
+        return schemas.Area(
+            centroid=schemas.Coordinate(
+                latitude=self.centroid.latitude,
+                longitude=self.centroid.longitude,
+            ),
+            range=self.range * 100000,  # 위경도를 미터로 변환
+        )

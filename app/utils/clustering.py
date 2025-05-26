@@ -1,5 +1,5 @@
-from app.models.area import Area
-from app.models.coordinate import Coordinate
+from app.model.area import Area
+from app.model.coordinate import Coordinate
 from collections import defaultdict
 from sklearn.cluster import DBSCAN
 import numpy as np
