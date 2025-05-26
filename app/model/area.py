@@ -35,3 +35,6 @@ class Area:
             ),
             range=self.range * 100000,  # 위경도를 미터로 변환
         )
+
+    def __repr__(self) -> str:
+        return f"Area(centroid={self.centroid}, range={self.range})"

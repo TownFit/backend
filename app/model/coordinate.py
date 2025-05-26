@@ -13,3 +13,6 @@ class Coordinate:
 
     def to_list(self) -> list[float]:
         return [self.latitude, self.longitude]
+
+    def __repr__(self) -> str:
+        return f"Coordinate(latitude={self.latitude}, longitude={self.longitude})"
