@@ -30,5 +30,5 @@ def get_recommendations(
 
     return AreaRecommendationResponse(
         recommendations=recommendations,
-        areas=[area.to_dict() for area in areas],
+        areas=[area.to_schema() for area in areas],
     )
