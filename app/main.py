@@ -19,8 +19,6 @@ app.add_middleware(
 app.add_middleware(
     SessionMiddleware,
     secret_key=settings.SESSION_SECRET_KEY,
-    same_site="none",
-    https_only=True,
 )
 
 app.include_router(api_router)
