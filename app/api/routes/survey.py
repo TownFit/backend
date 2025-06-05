@@ -36,7 +36,7 @@ def has_history(
 
 
 @router.post("/survey/submit", response_model=GeneralPostResponse)
-def submit_survey(
+async def submit_survey(
     body: SubmitSurveyRequest,
     dbSession: Annotated[Session, Depends(get_db)],
     user: Annotated[User, Depends(get_current_user)],
@@ -50,7 +50,7 @@ def submit_survey(
     # Gemini에 쿼리 날리기
     facilityTypes = crud.get_facility_types(dbSession)
     query = gemini.make_query(body, facilityTypes, number=3)
-    response = json.loads(gemini.query_gemini(query))
+    response = json.loads(await gemini.query_gemini(query))
     logger.info(f"Gemini response: {response}")
 
     # 기존 추천 기록 지우기 및 새로운 추천 기록 생성
