@@ -14,10 +14,10 @@ from app.schemas import (
 from app import crud
 from app.core.config import logger
 from app.utils import gemini
-from app.user import get_current_user
+from app.user import get_current_user, bearer_scheme
 
 
-router = APIRouter(tags=["survey"])
+router = APIRouter(tags=["survey"], security=[bearer_scheme])
 
 
 @router.get("/survey/has-history", response_model=HasHistoryResponse)

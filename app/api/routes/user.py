@@ -5,10 +5,10 @@ from sqlalchemy.orm import Session
 from app.core.db import get_db
 from app.schemas import FacilityType, GeneralPostResponse, User, Recommendation
 from app import crud
-from app.user import get_current_user
+from app.user import get_current_user, bearer_scheme
 
 
-router = APIRouter(tags=["user"])
+router = APIRouter(tags=["user"], security=[bearer_scheme])
 
 
 @router.post("/user/logout", response_model=GeneralPostResponse)

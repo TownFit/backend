@@ -9,7 +9,7 @@ from datetime import datetime, timedelta, timezone
 
 
 # JWT 인증 의존성
-bearer_scheme = HTTPBearer()
+bearer_scheme = HTTPBearer(auto_error=True)
 
 
 # 현재 로그인한 유저 조회 (JWT 기반)

@@ -7,13 +7,13 @@ from app.core.db import get_db
 from app.model.coordinate import Coordinate
 from app.schemas import User, AreaRecommendationResponse
 from app import crud
-from app.user import get_current_user
+from app.user import get_current_user, bearer_scheme
 from app.utils.clustering import cluster_coordinates_async
 from app.utils.reverse_grocoding import reverse_geocode
 from app.core.config import logger
 
 
-router = APIRouter(tags=["map"])
+router = APIRouter(tags=["map"], security=[bearer_scheme])
 
 
 @router.get("/map/get-recommendations", response_model=AreaRecommendationResponse)
