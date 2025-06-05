@@ -163,3 +163,64 @@ class GeneralPostResponse(BaseModel):
 
     class Config:
         json_schema_extra = {"message": "success"}
+
+
+# ---------------------
+# Map and Area Schemas
+# ---------------------
+class Coordinate(BaseModel):
+    latitude: float
+    longitude: float
+
+    class Config:
+        json_schema_extra = {"example": {"latitude": 37.1234, "longitude": 127.5678}}
+
+
+class Area(BaseModel):
+    centroid: Coordinate
+    range: float
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "centroid": {"latitude": 37.1234, "longitude": 127.5678},
+                "range": 300.0,
+            }
+        }
+
+
+class AreaRecommendationResponse(BaseModel):
+    recommendations: list[Recommendation]
+    areas: list[Area]
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "recommendations": [
+                    {
+                        "id": 1,
+                        "user_id": 1,
+                        "facility_type_id": 2,
+                        "created_at": "2024-05-22T12:00:00",
+                        "description": "추천 설명",
+                        "user": {
+                            "id": 1,
+                            "name": "홍길동",
+                            "oauth_provider": "google",
+                            "oauth_id": "1234567890",
+                        },
+                        "facility_type": {
+                            "id": 2,
+                            "name": "헬스",
+                            "description": "헬스 관련 시설",
+                        },
+                    }
+                ],
+                "areas": [
+                    {
+                        "centroid": {"latitude": 37.1234, "longitude": 127.5678},
+                        "range": 300.0,
+                    }
+                ],
+            }
+        }

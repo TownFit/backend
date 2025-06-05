@@ -64,3 +64,17 @@ def delete_recommendations(db: Session, user_id: int):
 # FacilityTypes
 def get_facility_types(db: Session):
     return db.query(models.FacilityTypes).all()
+
+
+# Facility
+def get_facility_by_user_id(db: Session, user_id: int):
+    facilities = (
+        db.query(models.Facilities)
+        .join(
+            models.Recommendations,
+            models.Facilities.type_id == models.Recommendations.facility_type_id,
+        )
+        .filter(models.Recommendations.user_id == user_id)
+        .all()
+    )
+    return facilities
