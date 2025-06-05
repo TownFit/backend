@@ -7,8 +7,8 @@ client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
 
 # Gemini에 쿼리 날리기
-def query_gemini(query: str, model: str = "gemini-2.0-flash") -> str:
-    response = client.models.generate_content(model=model, contents=query)
+async def query_gemini(query: str, model: str = "gemini-2.0-flash") -> str:
+    response = await client.models.generate_content(model=model, contents=query)
     return response.text
 
 

@@ -3,6 +3,7 @@ from app.model.coordinate import Coordinate
 from collections import defaultdict
 from sklearn.cluster import DBSCAN
 import numpy as np
+import asyncio
 
 
 def cluster_coordinates(
@@ -72,3 +73,28 @@ def cluster_coordinates(
 
     # 상위 N개 Area만 반환
     return result[:top_n]
+
+
+async def cluster_coordinates_async(
+    coordinates: list[Coordinate],
+    diversity_threshold,
+    distance_threshold: float = 0.00001 * 100,  # 약 100m
+    min_range: float = 0.00001 * 300,  # 약 300m
+    max_range: float = 0.00001 * 1000,  # 약 1000m
+    top_n: int = 3,  # 상위 3개 Area만 반환
+) -> list[Area]:
+    """
+    cluster_coordinates의 완전한 비동기 버전 (CPU-bound 작업을 별도 스레드에서 실행)
+    """
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(
+        None,
+        lambda: cluster_coordinates(
+            coordinates,
+            diversity_threshold,
+            distance_threshold,
+            min_range,
+            max_range,
+            top_n,
+        ),
+    )
