@@ -2,6 +2,7 @@ from app.model.area import Area
 from app.model.coordinate import Coordinate
 from collections import defaultdict
 from sklearn.cluster import DBSCAN
+from app.core.config import logger
 import numpy as np
 import asyncio
 
@@ -33,6 +34,15 @@ def cluster_coordinates(
         - 고유 type_id가 diversity_threshold 이상인 클러스터만 유효합니다.
         - 각 Area의 range는 min_range와 max_range 사이로 제한됩니다.
     """
+    logger.debug(
+        "클러스터링 시작: diversity_threshold=%d, distance_threshold=%.6f, min_range=%.6f, max_range=%.6f, top_n=%d",
+        diversity_threshold,
+        distance_threshold,
+        min_range,
+        max_range,
+        top_n,
+    )
+
     # 좌표 추출
     coords = np.array([c.to_list() for c in coordinates])
     if len(coords) == 0:
@@ -41,6 +51,10 @@ def cluster_coordinates(
     # DBSCAN으로 클러스터링
     db = DBSCAN(eps=distance_threshold, min_samples=diversity_threshold).fit(coords)
     labels = db.labels_
+    logger.debug(
+        "DBSCAN 클러스터링 완료, 레이블 수: %d",
+        len(set(labels)) - (1 if -1 in labels else 0),
+    )
 
     # 클러스터별로 시설과 type_id 집합을 동시에 관리
     clusters = defaultdict(lambda: {"coords": [], "type_ids": set()})
@@ -56,6 +70,11 @@ def cluster_coordinates(
         for cluster in clusters.values()
         if len(cluster["type_ids"]) >= diversity_threshold
     ]
+    logger.debug(
+        "유효한 클러스터 수: %d (diversity_threshold=%d)",
+        len(valid_clusters),
+        diversity_threshold,
+    )
 
     # 개수(밀도) 기준 내림차순 정렬
     valid_clusters.sort(key=len, reverse=True)
@@ -70,31 +89,43 @@ def cluster_coordinates(
         elif area.range > max_range:
             area.range = max_range
         result.append(area)
+    logger.debug(
+        "Area 객체로 변환 완료, 총 Area 수: %d",
+        len(result),
+    )
 
     # 상위 N개 Area만 반환
     return result[:top_n]
 
 
-async def cluster_coordinates_async(
+async def cluster_coordinates_async_multi(
     coordinates: list[Coordinate],
     diversity_threshold,
-    distance_threshold: float = 0.00001 * 100,  # 약 100m
-    min_range: float = 0.00001 * 300,  # 약 300m
-    max_range: float = 0.00001 * 1000,  # 약 1000m
-    top_n: int = 3,  # 상위 3개 Area만 반환
+    distance_thresholds: list[float] = [
+        0.00001 * 50,
+        0.00001 * 100,
+        0.00001 * 200,
+        0.00001 * 400,
+    ],
+    top_n: int = 3,
 ) -> list[Area]:
-    """
-    cluster_coordinates의 완전한 비동기 버전 (CPU-bound 작업을 별도 스레드에서 실행)
-    """
     loop = asyncio.get_running_loop()
-    return await loop.run_in_executor(
-        None,
-        lambda: cluster_coordinates(
-            coordinates,
-            diversity_threshold,
-            distance_threshold,
-            min_range,
-            max_range,
-            top_n,
-        ),
-    )
+    tasks = [
+        loop.run_in_executor(
+            None,
+            lambda dt=dt: cluster_coordinates(
+                coordinates,
+                diversity_threshold,
+                dt,
+                diversity_threshold * 2,
+                diversity_threshold * 10,
+                top_n,
+            ),
+        )
+        for dt in distance_thresholds
+    ]
+    results = await asyncio.gather(*tasks)
+    for res in results:
+        if res:
+            return res
+    return []

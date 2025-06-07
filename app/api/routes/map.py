@@ -8,7 +8,7 @@ from app.model.coordinate import Coordinate
 from app.schemas import User, AreaRecommendationResponse
 from app import crud
 from app.user import get_current_user
-from app.utils.clustering import cluster_coordinates_async
+from app.utils.clustering import cluster_coordinates_async_multi
 from app.utils.reverse_grocoding import reverse_geocode
 from app.core.config import logger
 
@@ -31,7 +31,9 @@ async def get_recommendations(
     recommendations = crud.get_recommendations(dbSession, user.id)
     facilities = crud.get_facility_by_user_id(dbSession, user.id)
     coordinates = [Coordinate.from_facility(facility) for facility in facilities]
-    areas = await cluster_coordinates_async(coordinates, diversity_threshold=3, top_n=5)
+    areas = await cluster_coordinates_async_multi(
+        coordinates, diversity_threshold=3, top_n=5
+    )
     schemas = [area.to_schema() for area in areas]
 
     # 역지오코딩 병렬 처리 및 fallback 적용

@@ -22,7 +22,7 @@ def get_all_facility_types(
     """
     추천 가능한 모든 시설 타입 조회
     """
-    facility_types = crud.get_all_facility_types(dbSession)
+    facility_types = crud.get_facility_types(dbSession)
     return facility_types
 
 
