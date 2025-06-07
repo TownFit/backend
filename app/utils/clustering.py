@@ -107,8 +107,8 @@ async def cluster_coordinates_async_multi(
             coordinates,
             diversity_threshold,
             dt,
-            diversity_threshold * 2,
-            diversity_threshold * 10,
+            dt * 2,
+            dt * 10,
             top_n,
         )
 
