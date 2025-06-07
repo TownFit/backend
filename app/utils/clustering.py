@@ -97,7 +97,6 @@ async def cluster_coordinates_async_multi(
         0.00001 * 100,
         0.00001 * 200,
         0.00001 * 400,
-        0.00001 * 800,
     ],
     top_n: int = 3,
 ) -> list[Area]:
