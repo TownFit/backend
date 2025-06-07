@@ -93,7 +93,6 @@ async def cluster_coordinates_async_multi(
     coordinates: list[Coordinate],
     diversity_threshold,
     distance_thresholds: list[float] = [
-        0.00001 * 50,
         0.00001 * 100,
         0.00001 * 200,
         0.00001 * 400,
