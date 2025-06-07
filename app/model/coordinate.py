@@ -3,7 +3,7 @@ from app.schemas import Facility
 
 
 class Coordinate:
-    def __init__(self, latitude: float, longitude: float, type_id: int):
+    def __init__(self, latitude: float, longitude: float, type_id: int = -1):
         self.latitude = latitude
         self.longitude = longitude
         self.type_id = type_id
