@@ -2,13 +2,17 @@ from google import genai
 from app.core.config import settings
 from app.models import FacilityTypes
 from app.schemas import SubmitSurveyRequest
+import asyncio
 
 client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
 
-# Gemini에 쿼리 날리기
+# Gemini에 쿼리 날리기 (비동기)
 async def query_gemini(query: str, model: str = "gemini-2.0-flash") -> str:
-    response = await client.models.generate_content(model=model, contents=query)
+    loop = asyncio.get_running_loop()
+    response = await loop.run_in_executor(
+        None, lambda: client.models.generate_content(model=model, contents=query)
+    )
     return response.text
 
 
