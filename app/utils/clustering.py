@@ -34,15 +34,6 @@ def cluster_coordinates(
         - 고유 type_id가 diversity_threshold 이상인 클러스터만 유효합니다.
         - 각 Area의 range는 min_range와 max_range 사이로 제한됩니다.
     """
-    logger.debug(
-        "클러스터링 시작: diversity_threshold=%d, distance_threshold=%.6f, min_range=%.6f, max_range=%.6f, top_n=%d",
-        diversity_threshold,
-        distance_threshold,
-        min_range,
-        max_range,
-        top_n,
-    )
-
     # 좌표 추출
     coords = np.array([c.to_list() for c in coordinates])
     if len(coords) == 0:
@@ -106,25 +97,26 @@ async def cluster_coordinates_async_multi(
         0.00001 * 100,
         0.00001 * 200,
         0.00001 * 400,
+        0.00001 * 800,
     ],
     top_n: int = 3,
 ) -> list[Area]:
     loop = asyncio.get_running_loop()
-    tasks = [
-        loop.run_in_executor(
-            None,
-            lambda dt=dt: cluster_coordinates(
-                coordinates,
-                diversity_threshold,
-                dt,
-                diversity_threshold * 2,
-                diversity_threshold * 10,
-                top_n,
-            ),
+
+    def run_cluster(dt):
+        return cluster_coordinates(
+            coordinates,
+            diversity_threshold,
+            dt,
+            diversity_threshold * 2,
+            diversity_threshold * 10,
+            top_n,
         )
-        for dt in distance_thresholds
-    ]
+
+    tasks = [loop.run_in_executor(None, run_cluster, dt) for dt in distance_thresholds]
+
     results = await asyncio.gather(*tasks)
+
     for res in results:
         if res:
             return res
