@@ -78,3 +78,7 @@ def get_facility_by_user_id(db: Session, user_id: int):
         .all()
     )
     return facilities
+
+
+def get_facility_count(db: Session):
+    return db.query(models.Facilities).count()
