@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
-from starlette.middleware.sessions import SessionMiddleware
 from app.api.main import api_router
 from app.core.config import settings
 
@@ -11,11 +10,20 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=[
+        "Authorization",
+        "Content-Type",
+        "Set-Cookie",
+        "Accept",
+        "Origin",
+        "User-Agent",
+        "X-Requested-With",
+        "Access-Control-Allow-Origin",
+        "Access-Control-Allow-Credentials",
+        "Access-Control-Allow-Headers",
+        "Access-Control-Allow-Methods",
+    ],
 )
-
-# 세션 미들웨어 설정
-app.add_middleware(SessionMiddleware, secret_key=settings.SESSION_SECRET_KEY)
 
 app.include_router(api_router)

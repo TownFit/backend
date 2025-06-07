@@ -9,6 +9,7 @@ from app.utils.google_profile import GoogleProfile
 from app.core.config import settings
 from app.core.db import get_db
 from app import crud
+from app.user import create_jwt_for_user
 
 router = APIRouter(tags=["auth"])
 
@@ -42,11 +43,9 @@ def google_callback(
             ),
         )
 
-    # 세션에 유저 정보 저장
-    request.session["user"] = user.id
+    # JWT 토큰 생성
+    token = create_jwt_for_user(user)
 
-    # 프론트엔드로 리다이렉트
-    return RedirectResponse(
-        url=settings.GOOGLE_ORIGIN_URI,
-        status_code=302,
-    )
+    # 프론트엔드로 토큰 전달
+    redirect_url = f"{settings.GOOGLE_ORIGIN_URI}?token={token}"
+    return RedirectResponse(url=redirect_url, status_code=302)
