@@ -32,7 +32,7 @@ async def get_recommendations(
     facilities = crud.get_facility_by_user_id(dbSession, user.id)
     coordinates = [Coordinate.from_facility(facility) for facility in facilities]
     areas = await cluster_coordinates_async_multi(
-        coordinates, diversity_threshold=3, top_n=5
+        coordinates, diversity_threshold=3, top_n=3
     )
     schemas = [area.to_schema() for area in areas]
 
