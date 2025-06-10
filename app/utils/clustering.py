@@ -101,12 +101,13 @@ async def cluster_coordinates_async_multi(
     coordinates: list[Coordinate],
     diversity_threshold,
     distance_thresholds: list[float] = [
+        0.00001 * 50,
         0.00001 * 100,
         0.00001 * 200,
         0.00001 * 400,
     ],
     top_n: int = 3,
-    min_range: float = 0.00001 * 400,
+    min_range: float = 0.00001 * 100,
     max_range: float = 0.00001 * 1500,
 ) -> list[Area]:
     loop = asyncio.get_running_loop()
@@ -126,6 +127,7 @@ async def cluster_coordinates_async_multi(
     results = await asyncio.gather(*tasks)
 
     for res in results:
-        if res:
+        if len(res) >= top_n:
             return res
-    return []
+
+    return results[0] if results else []
