@@ -19,6 +19,6 @@ async def reverse_geocode(lat: float, lon: float) -> str:
 
         addr_info = result["results"][0]["region"]
         if addr_info["area4"]["name"]:
-            return addr_info["area4"]["name"]
+            return f"{addr_info['area3']['name']} {addr_info['area4']['name']}"
         else:
-            return addr_info["area3"]["name"]
+            return f"{addr_info['area2']['name']} {addr_info['area3']['name']}"
