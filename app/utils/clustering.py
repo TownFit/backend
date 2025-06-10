@@ -76,9 +76,13 @@ def cluster_coordinates(
     # Area 객체로 변환
     result = []
     max_len = len(valid_clusters[0])
-    for coords in valid_clusters:
-        score = int(len(coords) / max_len * 100)
-        area = Area.from_coordinates(coords, score=score)
+    for index, coords in enumerate(valid_clusters):
+        score = len(coords) / max_len * 100
+        weighted_score = (score // 2 + 50) * (
+            0.9**index
+        )  # 50 ~ 100으로 조절 후 순위 가중치 부여
+
+        area = Area.from_coordinates(coords, score=weighted_score)
         # Area의 range를 min_range와 max_range 사이로 제한
         if area.range < min_range:
             area.range = min_range
