@@ -103,8 +103,8 @@ async def cluster_coordinates_async_multi(
         0.00001 * 400,
     ],
     top_n: int = 3,
-    min_range: float = 0.00001 * 500,
-    max_range: float = 0.00001 * 2500,
+    min_range: float = 0.00001 * 400,
+    max_range: float = 0.00001 * 1500,
 ) -> list[Area]:
     loop = asyncio.get_running_loop()
 
