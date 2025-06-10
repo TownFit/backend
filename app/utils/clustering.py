@@ -76,9 +76,12 @@ def cluster_coordinates(
     # Area 객체로 변환
     result = []
     max_len = len(valid_clusters[0])
-    for coords in valid_clusters:
-        score = int(len(coords) / max_len * 100)
-        area = Area.from_coordinates(coords, score=score)
+    for index, coords in enumerate(valid_clusters):
+        # 50 ~ 100으로 조절 후 순위 가중치 부여
+        score = len(coords) / max_len * 100
+        weighted_score = round((score / 2 + 50) * (0.9**index))
+
+        area = Area.from_coordinates(coords, score=weighted_score)
         # Area의 range를 min_range와 max_range 사이로 제한
         if area.range < min_range:
             area.range = min_range
@@ -98,13 +101,14 @@ async def cluster_coordinates_async_multi(
     coordinates: list[Coordinate],
     diversity_threshold,
     distance_thresholds: list[float] = [
+        0.00001 * 50,
         0.00001 * 100,
         0.00001 * 200,
         0.00001 * 400,
     ],
     top_n: int = 3,
-    min_range: float = 0.00001 * 400,
-    max_range: float = 0.00001 * 1500,
+    min_range: float = 0.00001 * 500,
+    max_range: float = 0.00001 * 1000,
 ) -> list[Area]:
     loop = asyncio.get_running_loop()
 
@@ -123,6 +127,7 @@ async def cluster_coordinates_async_multi(
     results = await asyncio.gather(*tasks)
 
     for res in results:
-        if res:
+        if len(res) >= top_n:
             return res
-    return []
+
+    return results[0] if results else []

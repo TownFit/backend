@@ -30,9 +30,10 @@ def delete_me(
 ) -> GeneralPostResponse:
     """
     회원 탈퇴
-    - 탈퇴시 유저 정보와 추천 시설타입 목록을 모두 삭제
+
+    - 유저 정보 삭제
+    - 추천 시설타입 목록을 모두 삭제 (by SQL Trigger)
     """
-    crud.delete_recommendations(dbSession, user.id)
     crud.delete_user(dbSession, user.id)
     return GeneralPostResponse(message="success")
 
