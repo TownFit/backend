@@ -67,13 +67,18 @@ def cluster_coordinates(
         diversity_threshold,
     )
 
+    if not valid_clusters:
+        return []
+
     # 개수(밀도) 기준 내림차순 정렬
     valid_clusters.sort(key=len, reverse=True)
 
     # Area 객체로 변환
     result = []
+    max_len = len(valid_clusters[0])
     for coords in valid_clusters:
-        area = Area.from_coordinates(coords)
+        score = int(len(coords) / max_len * 100)
+        area = Area.from_coordinates(coords, score=score)
         # Area의 range를 min_range와 max_range 사이로 제한
         if area.range < min_range:
             area.range = min_range

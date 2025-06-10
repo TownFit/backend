@@ -4,12 +4,13 @@ from app import schemas
 
 
 class Area:
-    def __init__(self, centroid: Coordinate, range: float):
+    def __init__(self, centroid: Coordinate, range: float, score: int = 0):
         self.centroid = centroid
         self.range = range
+        self.score = score
 
     @classmethod
-    def from_coordinates(cls, coordinates: list[Coordinate]) -> Area:
+    def from_coordinates(cls, coordinates: list[Coordinate], score: int) -> Area:
         if not coordinates:
             raise ValueError("coordinates 리스트가 비어 있습니다.")
 
@@ -25,7 +26,7 @@ class Area:
             ** 0.5
             for c in coordinates
         )
-        return cls(centroid, radius)
+        return cls(centroid, radius, score)
 
     def to_schema(self) -> schemas.Area:
         return schemas.Area(
@@ -34,7 +35,8 @@ class Area:
                 longitude=self.centroid.longitude,
             ),
             range=self.range * 100000,  # 위경도를 미터로 변환
+            score=self.score,
         )
 
     def __repr__(self) -> str:
-        return f"Area(centroid={self.centroid}, range={self.range})"
+        return f"Area(centroid={self.centroid}, range={self.range}, score={self.score})"

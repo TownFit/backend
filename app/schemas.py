@@ -179,6 +179,7 @@ class Coordinate(BaseModel):
 class Area(BaseModel):
     centroid: Coordinate
     range: float
+    score: int
     name: Optional[str] = None
 
     class Config:
@@ -186,6 +187,7 @@ class Area(BaseModel):
             "example": {
                 "centroid": {"latitude": 37.1234, "longitude": 127.5678},
                 "range": 300.0,
+                "score": 85,
                 "name": "OO동",
             }
         }
@@ -222,6 +224,7 @@ class AreaRecommendationResponse(BaseModel):
                     {
                         "centroid": {"latitude": 37.1234, "longitude": 127.5678},
                         "range": 300.0,
+                        "score": 85,
                         "name": "OO동",
                     }
                 ],
